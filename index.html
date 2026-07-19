@@ -1,0 +1,2107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Mall - Smart Shopping Experience</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6da9e6 0%, #ae73ea 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 28px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #764ba2;
+        }
+
+        .cart-icon {
+            position: relative;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .notification-icon {
+            position: relative;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .wishlist-icon {
+            position: relative;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .notification-count, .cart-count, .wishlist-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e74c3c;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+        }
+
+        .sidebar {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .sidebar h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .filter-group label:hover {
+            background: #f0f0f0;
+        }
+
+        .filter-group input {
+            margin-right: 8px;
+        }
+
+        .content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: #666;
+            font-size: 14px;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .product-card {
+            background: #f9f9f9;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 50px;
+        }
+
+        .product-info {
+            padding: 15px;
+        }
+
+        .product-name {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .product-price {
+            color: #667eea;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .product-rating {
+            font-size: 12px;
+            color: #f39c12;
+            margin-bottom: 8px;
+        }
+
+        .product-stock {
+            font-size: 12px;
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+
+        .ai-badge {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-bottom: 10px;
+        }
+
+        .wishlist-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0;
+            margin-bottom: 10px;
+        }
+
+        .wishlist-btn.active {
+            color: #e74c3c;
+        }
+
+        .product-variants {
+            margin-bottom: 10px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .variant-option {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .variant-option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .coupon-section {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .coupon-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .coupon-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        .review-section {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        .review-item {
+            background: white;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 3px;
+        }
+
+        .review-title {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .review-rating {
+            color: #f39c12;
+            font-size: 14px;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.3s;
+        }
+
+        .add-to-cart:hover {
+            background: #764ba2;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .cart-item-details {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .cart-item-price {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .quantity-control {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .quantity-control button {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .checkout-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+
+        .total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .ai-recommendations {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .ai-score {
+            display: inline-block;
+            background: #f39c12;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .user-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+
+        .user-info {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        /* Location Tracker Styles */
+        .location-tracker {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .tracker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .tracker-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .status-badge {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .tracker-map-container {
+            background: white;
+            color: #333;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .tracker-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .tracker-info p {
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #4caf50;
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        .checkpoint-list {
+            background: white;
+            color: #333;
+            padding: 12px;
+            border-radius: 5px;
+            font-size: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .checkpoint {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+        }
+
+        .checkpoint:last-child {
+            border-bottom: none;
+        }
+
+        .checkpoint-time {
+            font-weight: bold;
+            min-width: 70px;
+            color: #667eea;
+        }
+
+        .checkpoint-desc {
+            flex: 1;
+            color: #666;
+        }
+
+        .track-button {
+            width: 100%;
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .track-button:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        .map-placeholder {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        @keyframes slideInText {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .payment-method:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: #667eea !important;
+            transform: scale(1.05);
+        }
+
+        .payment-method.active {
+            background: rgba(102, 126, 234, 0.2);
+            border: 2px solid #667eea !important;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .tracker-map-container {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛍️ AI MALL</h1>
+            <div class="header-actions">
+                <button onclick="toggleAIChat()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: bold;">🤖 VIYA</button>
+                <div class="notification-icon" onclick="toggleNotifications()">
+                    🔔
+                    <span class="notification-count" id="notificationCount">0</span>
+                </div>
+                <div class="wishlist-icon" onclick="toggleWishlist()">
+                    ❤️
+                    <span class="wishlist-count" id="wishlistCount">0</span>
+                </div>
+                <div class="cart-icon" onclick="toggleCart()">
+                    🛒
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+                <button onclick="toggleUserLogin()">👤 Sign In</button>
+            </div>
+        </header>
+
+        <!-- Promotional Banner Slider -->
+        <div class="banner-slider" style="margin-bottom: 30px; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); background: white; position: relative;">
+            <div class="slider-container" style="position: relative; width: 100%; height: 280px; overflow: hidden;">
+                <div class="slider-track" style="display: flex; transition: transform 0.8s ease-in-out; height: 100%;">
+                    <div class="slider-item" style="min-width: 100%; display: flex; align-items: center; justify-content: space-around; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center; padding: 40px; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: -50%; right: -10%; opacity: 0.1; font-size: 300px;">🎉</div>
+                        <div style="animation: slideInText 0.8s ease-in-out; z-index: 2;">
+                            <h2 style="font-size: 42px; font-weight: bold; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">🎉 MEGA SALE</h2>
+                            <h3 style="font-size: 28px; margin-bottom: 10px; color: #ffd700; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">UP TO 70% OFF</h3>
+                            <p style="font-size: 16px; margin-bottom: 5px;">On All Selected Products</p>
+                            <button onclick="alert('🎊 Start Shopping Now!')" style="background: #ffd700; color: #667eea; border: none; padding: 12px 30px; border-radius: 25px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 16px; transition: all 0.3s;">SHOP NOW →</button>
+                        </div>
+                    </div>
+                    <div class="slider-item" style="min-width: 100%; display: flex; align-items: center; justify-content: space-around; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; text-align: center; padding: 40px; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: -50%; right: -10%; opacity: 0.1; font-size: 300px;">💳</div>
+                        <div style="animation: slideInText 0.8s ease-in-out; z-index: 2;">
+                            <h2 style="font-size: 42px; font-weight: bold; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">💳 FREE SHIPPING</h2>
+                            <h3 style="font-size: 28px; margin-bottom: 10px; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">On All Orders</h3>
+                            <p style="font-size: 16px; margin-bottom: 5px;">No Minimum Order Value!</p>
+                            <p style="font-size: 14px; background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 20px; display: inline-block; margin-top: 10px;">✨ Limited Time Offer</p>
+                        </div>
+                    </div>
+                    <div class="slider-item" style="min-width: 100%; display: flex; align-items: center; justify-content: space-around; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; text-align: center; padding: 40px; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: -50%; right: -10%; opacity: 0.1; font-size: 300px;">🤖</div>
+                        <div style="animation: slideInText 0.8s ease-in-out; z-index: 2;">
+                            <h2 style="font-size: 42px; font-weight: bold; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">🤖 AI POWERED</h2>
+                            <h3 style="font-size: 28px; margin-bottom: 10px; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">Smart Recommendations</h3>
+                            <p style="font-size: 16px; margin-bottom: 5px;">Personalized Just For You!</p>
+                            <button onclick="toggleAIChat()" style="background: white; color: #00f2fe; border: none; padding: 12px 30px; border-radius: 25px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 16px; transition: all 0.3s;">CHAT WITH VIYA →</button>
+                        </div>
+                    </div>
+                    <div class="slider-item" style="min-width: 100%; display: flex; align-items: center; justify-content: space-around; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; text-align: center; padding: 40px; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: -50%; right: -10%; opacity: 0.1; font-size: 300px;">🚚</div>
+                        <div style="animation: slideInText 0.8s ease-in-out; z-index: 2;">
+                            <h2 style="font-size: 42px; font-weight: bold; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">🚚 EXPRESS DELIVERY</h2>
+                            <h3 style="font-size: 28px; margin-bottom: 10px; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">24-48 Hours</h3>
+                            <p style="font-size: 16px; margin-bottom: 5px;">Real-Time Tracking Available</p>
+                            <p style="font-size: 14px; background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 20px; display: inline-block; margin-top: 10px;">🎁 Extra Fast for Premium</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Slider Controls -->
+            <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 10; background: rgba(0,0,0,0.2); padding: 8px 15px; border-radius: 20px;">
+                <button class="slider-dot" onclick="goToSlide(0)" style="width: 14px; height: 14px; padding: 0; border-radius: 50%; background: white; opacity: 1; border: 2px solid white; cursor: pointer; transition: all 0.3s;"></button>
+                <button class="slider-dot" onclick="goToSlide(1)" style="width: 14px; height: 14px; padding: 0; border-radius: 50%; background: white; opacity: 0.5; border: 2px solid white; cursor: pointer; transition: all 0.3s;"></button>
+                <button class="slider-dot" onclick="goToSlide(2)" style="width: 14px; height: 14px; padding: 0; border-radius: 50%; background: white; opacity: 0.5; border: 2px solid white; cursor: pointer; transition: all 0.3s;"></button>
+                <button class="slider-dot" onclick="goToSlide(3)" style="width: 14px; height: 14px; padding: 0; border-radius: 50%; background: white; opacity: 0.5; border: 2px solid white; cursor: pointer; transition: all 0.3s;"></button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <h2>🔍 Filters</h2>
+                <div class="filter-group">
+                    <h3 style="font-size: 14px; margin-bottom: 10px;">Categories</h3>
+                    <div id="categoryList"></div>
+                </div>
+                <div class="filter-group">
+                    <label>
+                        <input type="checkbox" id="inStockOnly" onchange="applyFilters()">
+                        In Stock Only
+                    </label>
+                </div>
+                <div class="filter-group">
+                    <label>
+                        <input type="checkbox" id="topRatedOnly" onchange="applyFilters()">
+                        Top Rated
+                    </label>
+                </div>
+                <div class="filter-group">
+                    <label>
+                        <input type="checkbox" id="aiRecommended" onchange="applyFilters()">
+                        AI Recommended
+                    </label>
+                </div>
+            </div>
+
+            <div class="content">
+                <div id="alertBox"></div>
+
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search products..." onkeyup="searchProducts()">
+                    <button onclick="searchProducts()">Search</button>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('all')">All Products</button>
+                    <button class="tab" onclick="switchTab('ai-picks')">AI Picks</button>
+                    <button class="tab" onclick="switchTab('my-orders')">My Orders</button>
+                </div>
+
+                <div id="productsContainer" class="products-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🛒 Your Cart</h2>
+                <button class="close-btn" onclick="toggleCart()">×</button>
+            </div>
+            <div id="cartItemsContainer"></div>
+            <div id="userSection" class="user-section" style="display: none;">
+                <h3 style="margin-bottom: 15px;">Delivery Address</h3>
+                <div class="form-group">
+                    <input type="text" id="deliveryAddress" placeholder="Enter your delivery address">
+                </div>
+                <button onclick="checkout()" style="width: 100%; padding: 12px; font-size: 16px;">
+                    Place Order
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Login Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>👤 Account</h2>
+                <button class="close-btn" onclick="toggleUserLogin()">×</button>
+            </div>
+            <div id="userContent"></div>
+        </div>
+    </div>
+
+    <!-- AI Chatbot Modal -->
+    <div id="aiChatModal" class="modal" style="display: none; position: fixed; bottom: 20px; right: 20px; width: auto; max-width: 400px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+        <div class="modal-content" style="border-radius: 15px; max-height: 500px; display: flex; flex-direction: column;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px 15px 0 0;">
+                <h2 style="color: white; margin: 0;">🤖 VIYA - Your AI Assistant</h2>
+                <button class="close-btn" onclick="toggleAIChat()" style="color: white; font-size: 24px;">×</button>
+            </div>
+            <div id="aiChatMessages" style="flex: 1; overflow-y: auto; padding: 15px; min-height: 250px; max-height: 350px; background: white;">
+                <div style="text-align: center; color: #999; padding: 20px;">
+                    <p style="font-size: 14px; margin: 0;">👋 Hi! I'm VIYA</p>
+                    <p style="font-size: 12px; margin: 5px 0 0 0; color: #aaa;">Ask me anything about your shopping!</p>
+                </div>
+            </div>
+            <div style="padding: 15px; background: #f8f9fa; border-radius: 0 0 15px 15px; border-top: 1px solid #ddd;">
+                <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                    <input type="text" id="aiChatInput" placeholder="Ask me anything..." style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 13px;">
+                    <button onclick="sendAIMessage()" style="padding: 10px 15px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Send</button>
+                </div>
+                <button id="voiceBtn" onclick="startVoiceInput()" style="width: 100%; padding: 10px; background: #764ba2; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    🎤 Speak Now
+                </button>
+                <p id="voiceStatus" style="font-size: 12px; color: #666; text-align: center; margin: 5px 0 0 0; display: none;"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUserId = null;
+        let currentTab = 'all';
+        let allProducts = [];
+        let currentSlide = 0;
+        let sliderAutoPlay = null;
+
+        // Initialize the application
+        async function init() {
+            await loadProducts();
+            await loadCategories();
+            updateCartCount();
+            startSlider();
+        }
+
+        // Promotional Banner Slider Functions
+        function startSlider() {
+            autoPlaySlider();
+        }
+
+        function autoPlaySlider() {
+            sliderAutoPlay = setInterval(() => {
+                currentSlide = (currentSlide + 1) % 4;
+                updateSliderPosition();
+            }, 5000); // Change slide every 5 seconds
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            clearInterval(sliderAutoPlay);
+            updateSliderPosition();
+            startSlider();
+        }
+
+        function updateSliderPosition() {
+            const track = document.querySelector('.slider-track');
+            const offset = -currentSlide * 100;
+            track.style.transform = `translateX(${offset}%)`;
+
+            // Update dot indicators
+            const dots = document.querySelectorAll('.slider-dot');
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.style.opacity = '1';
+                    dot.style.border = '2px solid #667eea';
+                } else {
+                    dot.style.opacity = '0.5';
+                    dot.style.border = 'none';
+                }
+            });
+        }
+
+        // Payment Method Selection Function
+        function selectPaymentMethod(method) {
+            // Remove active class from all payment methods
+            const paymentMethods = document.querySelectorAll('.payment-method');
+            paymentMethods.forEach(pm => {
+                pm.classList.remove('active');
+            });
+
+            // Add active class to selected method
+            event.target.closest('.payment-method').classList.add('active');
+
+            // Payment method details
+            const paymentDetails = {
+                upi: {
+                    name: 'UPI Payment',
+                    info: 'Pay using any UPI app - Google Pay, PhonePe, Paytm, etc.',
+                    icon: '📱'
+                },
+                netbanking: {
+                    name: 'Net Banking',
+                    info: 'Secure payment through your bank account',
+                    icon: '🏦'
+                },
+                card: {
+                    name: 'Credit/Debit Card',
+                    info: 'Pay using Visa, Mastercard, or RuPay cards',
+                    icon: '💳'
+                },
+                wallet: {
+                    name: 'Digital Wallets',
+                    info: 'Pay using Paytm, Amazon Pay, Mobikwik, or Freecharge',
+                    icon: '💰'
+                }
+            };
+
+            const details = paymentDetails[method];
+            showAlert(`${details.icon} ${details.name}\n\n${details.info}`, 'info');
+        }
+
+        // Load all products
+        async function loadProducts() {
+            try {
+                const response = await fetch('/api/products');
+                allProducts = await response.json();
+                displayProducts(allProducts);
+            } catch (error) {
+                showAlert('Error loading products', 'error');
+                console.error('Error:', error);
+            }
+        }
+
+        // Load categories
+        async function loadCategories() {
+            try {
+                const response = await fetch('/api/categories');
+                const categories = await response.json();
+                const categoryList = document.getElementById('categoryList');
+                categoryList.innerHTML = categories.map(cat => `
+                    <label>
+                        <input type="checkbox" value="${cat.id}" onchange="applyFilters()">
+                        ${cat.name}
+                    </label>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
+        // Display products
+        function displayProducts(products) {
+            const container = document.getElementById('productsContainer');
+            if (products.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999;">No products found</p>';
+                return;
+            }
+
+            container.innerHTML = products.map(product => `
+                <div class="product-card">
+                    <div class="product-image" style="position: relative; background: #f0f0f0;">
+                        ${product.imageUrl ? `<img src="${product.imageUrl}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" onload="this.style.display='block'; this.nextElementSibling.style.display='none';" loading="lazy">` : ''}
+                        <div style="display: flex; align-items: center; justify-content: center; height: 100%; font-size: 48px; width: 100%; ${product.imageUrl ? 'display: none;' : ''}">${getProductEmoji(product)}</div>
+                    </div>
+                    <div class="product-info">
+                        <button class="wishlist-btn" onclick="toggleProductWishlist(${product.id}, this)" id="wishlist-${product.id}">🤍</button>
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-price">₹${product.price.toFixed(2)}</div>
+                        ${product.rating ? `<div class="product-rating">⭐ ${product.rating}/5</div>` : ''}
+                        <div class="product-stock">${product.stock} in stock</div>
+                        ${product.aiScore ? `<div class="ai-badge">AI Score: ${product.aiScore}</div>` : ''}
+                        <div class="product-variants" id="variants-${product.id}"></div>
+                        <button class="add-to-cart" onclick="addToCart(${product.id}, '${product.name}', ${product.price})">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Load variants for each product
+            products.forEach(product => {
+                loadProductVariants(product.id);
+                checkWishlistStatus(product.id);
+            });
+        }
+
+        // Get product emoji based on name
+        function getProductEmoji(product) {
+            const name = product.name.toLowerCase();
+            if (name.includes('phone') || name.includes('mobile')) return '📱';
+            if (name.includes('laptop') || name.includes('computer')) return '💻';
+            if (name.includes('headphone') || name.includes('audio')) return '🎧';
+            if (name.includes('watch')) return '⌚';
+            if (name.includes('camera')) return '📷';
+            if (name.includes('shoe') || name.includes('sneaker')) return '👟';
+            if (name.includes('book')) return '📚';
+            if (name.includes('game')) return '🎮';
+            return '📦';
+        }
+
+        // Search products
+        async function searchProducts() {
+            const searchTerm = document.getElementById('searchInput').value;
+            if (searchTerm.trim() === '') {
+                displayProducts(allProducts);
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/products/search?name=${encodeURIComponent(searchTerm)}`);
+                const results = await response.json();
+                displayProducts(results);
+            } catch (error) {
+                console.error('Error searching:', error);
+                showAlert('Error searching products', 'error');
+            }
+        }
+
+        // Apply filters
+        async function applyFilters() {
+            let filtered = [...allProducts];
+
+            // Category filter
+            const selectedCategories = Array.from(document.querySelectorAll('.filter-group input[type="checkbox"]:checked'))
+                .map(el => el.value)
+                .filter(v => v);
+
+            if (selectedCategories.length > 0) {
+                filtered = filtered.filter(p => selectedCategories.includes(p.category?.id?.toString()));
+            }
+
+            // In stock filter
+            if (document.getElementById('inStockOnly').checked) {
+                filtered = filtered.filter(p => p.stock > 0);
+            }
+
+            // Top rated filter
+            if (document.getElementById('topRatedOnly').checked) {
+                filtered = filtered.filter(p => p.rating && p.rating >= 4);
+            }
+
+            // AI recommended filter
+            if (document.getElementById('aiRecommended').checked) {
+                filtered = filtered.filter(p => p.aiScore && p.aiScore > 50);
+            }
+
+            displayProducts(filtered);
+        }
+
+        // Add to cart
+        async function addToCart(productId, name, price) {
+            if (!currentUserId) {
+                showAlert('Please sign in first to add items to cart', 'info');
+                toggleUserLogin();
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/cart/${currentUserId}/add`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ productId, quantity: 1 })
+                });
+
+                if (response.ok) {
+                    showAlert(`${name} added to cart!`, 'success');
+                    updateCartCount();
+                } else {
+                    showAlert('Failed to add item to cart', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error adding to cart', 'error');
+            }
+        }
+
+        // Update cart count
+        async function updateCartCount() {
+            if (!currentUserId) {
+                document.getElementById('cartCount').textContent = '0';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/cart/${currentUserId}`);
+                const cartItems = await response.json();
+                document.getElementById('cartCount').textContent = cartItems.length;
+            } catch (error) {
+                console.error('Error updating cart count:', error);
+            }
+        }
+
+        // Toggle cart modal
+        async function toggleCart() {
+            const modal = document.getElementById('cartModal');
+            modal.classList.toggle('active');
+
+            if (modal.classList.contains('active') && currentUserId) {
+                await loadCart();
+            }
+        }
+
+        // Load cart items
+        async function loadCart() {
+            try {
+                const response = await fetch(`/api/cart/${currentUserId}`);
+                const cartItems = await response.json();
+                const container = document.getElementById('cartItemsContainer');
+                const userSection = document.getElementById('userSection');
+
+                if (cartItems.length === 0) {
+                    container.innerHTML = '<div class="empty-cart">Your cart is empty</div>';
+                    userSection.style.display = 'none';
+                    return;
+                }
+
+                const total = cartItems.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+
+                container.innerHTML = `
+                    ${cartItems.map(item => `
+                        <div class="cart-item">
+                            <div class="cart-item-details">
+                                <div class="cart-item-name">${item.product.name}</div>
+                                <div class="cart-item-price">₹${item.product.price.toFixed(2)}</div>
+                            </div>
+                            <div class="quantity-control">
+                                <button onclick="updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
+                                <span>${item.quantity}</span>
+                                <button onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
+                                <button onclick="removeFromCart(${item.id})" style="background: #e74c3c;">Remove</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                    <div class="checkout-section">
+                        <div class="coupon-section">
+                            <h3 style="margin-bottom: 10px;">🎁 Apply Coupon Code</h3>
+                            <div class="coupon-input">
+                                <input type="text" id="couponCode" placeholder="Enter coupon code...">
+                                <button onclick="applyCoupon(${total})">Apply</button>
+                            </div>
+                            <div id="couponMessage"></div>
+                        </div>
+                        <div class="total">Subtotal: ₹${total.toFixed(2)}</div>
+                        <div id="discountDisplay"></div>
+                        <div class="total" style="font-size: 18px; color: #667eea;">Final Total: ₹${total.toFixed(2)}</div>
+                        <div class="ai-recommendations">
+                            💡 AI Tip: You're buying ${cartItems.length} item(s). Consider bulk discounts for future orders!
+                        </div>
+                    </div>
+                `;
+
+                userSection.style.display = 'block';
+            } catch (error) {
+                console.error('Error loading cart:', error);
+                showAlert('Error loading cart', 'error');
+            }
+        }
+
+        // Update quantity
+        async function updateQuantity(cartItemId, quantity) {
+            if (quantity <= 0) {
+                await removeFromCart(cartItemId);
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/cart/update/${cartItemId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ quantity })
+                });
+
+                if (response.ok) {
+                    await loadCart();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Remove from cart
+        async function removeFromCart(cartItemId) {
+            try {
+                const response = await fetch(`/api/cart/remove/${cartItemId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    await loadCart();
+                    updateCartCount();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Checkout
+        async function checkout() {
+            if (!currentUserId) {
+                showAlert('Please login first to place an order', 'error');
+                toggleUserLogin();
+                return;
+            }
+
+            const deliveryAddress = document.getElementById('deliveryAddress').value;
+            if (!deliveryAddress.trim()) {
+                showAlert('Please enter a delivery address', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/orders/${currentUserId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ deliveryAddress })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAlert(`✅ Order placed successfully! Order ID: ${data.id}`, 'success');
+                    document.getElementById('deliveryAddress').value = '';
+                    toggleCart();
+                    updateCartCount();
+                } else {
+                    showAlert(`❌ ${data.error || data.message || 'Failed to place order'}`, 'error');
+                    console.error('Order error:', data);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('❌ Error placing order: ' + error.message, 'error');
+            }
+        }
+
+        // Toggle user login modal
+        function toggleUserLogin(showTab = 'login') {
+            const modal = document.getElementById('userModal');
+            modal.classList.toggle('active');
+
+            if (modal.classList.contains('active')) {
+                const content = document.getElementById('userContent');
+                if (currentUserId) {
+                    loadUserProfile();
+                } else {
+                    // Show login/register tabs
+                    content.innerHTML = `
+                        <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ddd;">
+                            <button onclick="showAuthTab('login')" id="loginTab" style="flex: 1; padding: 10px; border: none; background: none; font-size: 14px; font-weight: bold; border-bottom: 3px solid #FF6B6B; cursor: pointer;">
+                                🔓 Login
+                            </button>
+                            <button onclick="showAuthTab('register')" id="registerTab" style="flex: 1; padding: 10px; border: none; background: none; font-size: 14px; font-weight: bold; border-bottom: 3px solid transparent; cursor: pointer;">
+                                📝 Register
+                            </button>
+                        </div>
+                        <div id="authContent"></div>
+                    `;
+                    showAuthTab(showTab);
+                }
+            }
+        }
+
+        // Show authentication tab
+        function showAuthTab(tab) {
+            document.getElementById('loginTab').style.borderBottom = tab === 'login' ? '3px solid #FF6B6B' : '3px solid transparent';
+            document.getElementById('registerTab').style.borderBottom = tab === 'register' ? '3px solid #FF6B6B' : '3px solid transparent';
+
+            const authContent = document.getElementById('authContent');
+            
+            if (tab === 'login') {
+                authContent.innerHTML = `
+                    <div class="form-group">
+                        <label>📧 Email</label>
+                        <input type="email" id="loginEmail" placeholder="Enter your email" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    </div>
+                    <div class="form-group">
+                        <label>🔐 Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    </div>
+                    <button onclick="handleLogin()" style="width: 100%; padding: 12px; background: #FF6B6B; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px;">Login</button>
+                    <p style="text-align: center; margin-top: 10px; font-size: 13px; color: #666;">
+                        Don't have an account? <a href="#" onclick="showAuthTab('register'); return false;" style="color: #FF6B6B; text-decoration: none; font-weight: bold;">Register here</a>
+                    </p>
+                `;
+            } else {
+                authContent.innerHTML = `
+                    <div class="form-group">
+                        <label>📧 Email</label>
+                        <input type="email" id="regEmail" placeholder="Enter your email" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    </div>
+                    <div class="form-group">
+                        <label>👤 Full Name</label>
+                        <input type="text" id="regName" placeholder="Enter your full name" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    </div>
+                    <div class="form-group">
+                        <label>📞 Phone (Optional)</label>
+                        <input type="text" id="regPhone" placeholder="Enter your phone number" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    </div>
+                    <div class="form-group">
+                        <label>🔐 Password</label>
+                        <input type="password" id="regPassword" placeholder="Create a password" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    </div>
+                    <div class="form-group">
+                        <label>🔐 Confirm Password</label>
+                        <input type="password" id="regPasswordConfirm" placeholder="Confirm password" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    </div>
+                    <button onclick="handleRegister()" style="width: 100%; padding: 12px; background: #FF6B6B; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 10px;">Register</button>
+                    <p style="text-align: center; margin-top: 10px; font-size: 13px; color: #666;">
+                        Already have an account? <a href="#" onclick="showAuthTab('login'); return false;" style="color: #FF6B6B; text-decoration: none; font-weight: bold;">Login here</a>
+                    </p>
+                `;
+            }
+        }
+
+        // Handle Login
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                showAlert('Please fill all fields', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/users/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentUserId = data.id;
+                    showAlert(`Welcome back ${data.fullName}!`, 'success');
+                    toggleUserLogin();
+                    updateCartCount();
+                } else {
+                    showAlert(data.error || 'Login failed', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error logging in', 'error');
+            }
+        }
+
+        // Handle Registration
+        async function handleRegister() {
+            const email = document.getElementById('regEmail').value.trim();
+            const fullName = document.getElementById('regName').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const passwordConfirm = document.getElementById('regPasswordConfirm').value;
+
+            if (!email || !fullName || !password || !passwordConfirm) {
+                showAlert('Please fill all required fields', 'error');
+                return;
+            }
+
+            if (password !== passwordConfirm) {
+                showAlert('Passwords do not match', 'error');
+                return;
+            }
+
+            if (password.length < 3) {
+                showAlert('Password must be at least 3 characters', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/users/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, fullName, password, phone })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAlert(`Account created successfully! Welcome ${data.fullName}!`, 'success');
+                    currentUserId = data.id;
+                    toggleUserLogin();
+                    updateCartCount();
+                } else {
+                    showAlert(data.error || 'Registration failed', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error registering', 'error');
+            }
+        }
+
+        // Logout
+        function logout() {
+            currentUserId = null;
+            updateCartCount();
+            updateWishlistCount();
+            updateNotificationCount();
+            toggleUserLogin();
+            showAlert('Logged out successfully', 'success');
+        }
+
+        // Load user profile
+        async function loadUserProfile() {
+            try {
+                const response = await fetch(`/api/users/${currentUserId}`);
+                const user = await response.json();
+
+                const content = document.getElementById('userContent');
+                content.innerHTML = `
+                    <div class="user-info" style="background: #f0f0f0; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 15px; color: #667eea;">👤 User Profile</h3>
+                        <div style="display: grid; gap: 10px;">
+                            <p><strong>Name:</strong> ${user.fullName}</p>
+                            <p><strong>Email:</strong> ${user.email}</p>
+                            <p><strong>Phone:</strong> ${user.phone || 'Not provided'}</p>
+                            <p><strong>Address:</strong> ${user.address || 'Not provided'}</p>
+                            <p><strong>Member Since:</strong> ${new Date(user.createdAt).toLocaleDateString()}</p>
+                        </div>
+                    </div>
+                    <button onclick="logout()" style="width: 100%; margin-bottom: 10px; background: #e74c3c;">Logout</button>
+                    <button onclick="loadMyOrders()" style="width: 100%;">View My Orders</button>
+                    <div id="ordersContainer" style="margin-top: 20px;"></div>
+                `;
+            } catch (error) {
+                console.error('Error loading user profile:', error);
+                showAlert('Error loading profile', 'error');
+            }
+        }
+
+        // ===== AI CHATBOT FUNCTIONS =====
+        let recognition;
+
+        // Toggle AI Chat Modal
+        function toggleAIChat() {
+            const modal = document.getElementById('aiChatModal');
+            if (modal.style.display === 'none' || modal.style.display === '') {
+                modal.style.display = 'block';
+                document.getElementById('aiChatInput').focus();
+                const messages = document.getElementById('aiChatMessages');
+                if (messages.children.length === 1) {
+                    loadAIGreeting();
+                }
+            } else {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Load AI Greeting
+        async function loadAIGreeting() {
+            try {
+                const response = await fetch('/api/ai/greeting');
+                const data = await response.json();
+                displayAIMessage(data.greeting, 'ai');
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Send Message to AI
+        async function sendAIMessage() {
+            const input = document.getElementById('aiChatInput');
+            const query = input.value.trim();
+
+            if (!query) {
+                showAlert('Please ask something!', 'error');
+                return;
+            }
+
+            displayAIMessage(query, 'user');
+            input.value = '';
+
+            try {
+                const response = await fetch('/api/ai/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query: query,
+                        userId: currentUserId
+                    })
+                });
+
+                const data = await response.json();
+                displayAIMessage(data.response, 'ai');
+            } catch (error) {
+                console.error('Error:', error);
+                displayAIMessage('Sorry, I had trouble understanding that. Can you try again?', 'ai');
+            }
+        }
+
+        // Display Message in Chat
+        function displayAIMessage(message, sender) {
+            const messagesDiv = document.getElementById('aiChatMessages');
+
+            if (messagesDiv.children.length === 1 && messagesDiv.children[0].style.textAlign === 'center') {
+                messagesDiv.innerHTML = '';
+            }
+
+            const msgElement = document.createElement('div');
+            msgElement.style.margin = '10px 0';
+            msgElement.style.padding = '10px 12px';
+            msgElement.style.borderRadius = '8px';
+            msgElement.style.wordWrap = 'break-word';
+            msgElement.style.maxWidth = '100%';
+
+            if (sender === 'user') {
+                msgElement.style.background = '#667eea';
+                msgElement.style.color = 'white';
+                msgElement.style.marginLeft = '20px';
+                msgElement.style.textAlign = 'right';
+                msgElement.style.fontSize = '13px';
+            } else {
+                msgElement.style.background = '#f0f0f0';
+                msgElement.style.color = '#333';
+                msgElement.style.marginRight = '20px';
+                msgElement.style.fontSize = '13px';
+                msgElement.style.lineHeight = '1.4';
+            }
+
+            msgElement.innerHTML = message;
+            messagesDiv.appendChild(msgElement);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Initialize Voice Recognition
+        function initVoiceRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                showAlert('Voice recognition not supported in your browser', 'error');
+                return null;
+            }
+            recognition = new SpeechRecognition();
+            recognition.language = 'en-IN';
+            recognition.interimResults = true;
+            recognition.continuous = false;
+            return recognition;
+        }
+
+        // Start Voice Input
+        function startVoiceInput() {
+            if (!recognition) {
+                recognition = initVoiceRecognition();
+            }
+
+            if (!recognition) return;
+
+            const voiceBtn = document.getElementById('voiceBtn');
+            const voiceStatus = document.getElementById('voiceStatus');
+
+            voiceBtn.disabled = true;
+            voiceBtn.style.opacity = '0.6';
+            voiceStatus.style.display = 'block';
+            voiceStatus.textContent = '🎤 Listening...';
+
+            recognition.onstart = () => {
+                voiceStatus.textContent = '🎤 Listening...';
+            };
+
+            recognition.onresult = (event) => {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                if (event.results[event.results.length - 1].isFinal) {
+                    voiceStatus.textContent = '✅ Processing...';
+                    document.getElementById('aiChatInput').value = transcript;
+                    setTimeout(() => sendAIMessage(), 500);
+                }
+            };
+
+            recognition.onerror = (event) => {
+                voiceStatus.textContent = '❌ Error: ' + event.error;
+                voiceBtn.disabled = false;
+                voiceBtn.style.opacity = '1';
+            };
+
+            recognition.onend = () => {
+                voiceBtn.disabled = false;
+                voiceBtn.style.opacity = '1';
+                voiceStatus.style.display = 'none';
+            };
+
+            recognition.start();
+        }
+
+        // Load my orders with location tracking
+        async function loadMyOrders() {
+            try {
+                const response = await fetch(`/api/orders/user/${currentUserId}`);
+                const orders = await response.json();
+                const container = document.getElementById('ordersContainer');
+
+                if (orders.length === 0) {
+                    container.innerHTML = '<p>You have no orders yet</p>';
+                    return;
+                }
+
+                let ordersHTML = `<h3 style="margin-bottom: 15px;">📦 My Orders (${orders.length})</h3>`;
+
+                for (const order of orders) {
+                    const locationData = await getOrderLocation(order.id);
+                    
+                    let locationHTML = '';
+                    if (locationData && locationData.currentLocation) {
+                        const loc = locationData.currentLocation;
+                        const delivery = new Date(loc.estimatedDeliveryTime);
+                        const progress = locationData.totalCheckpoints ? Math.min((locationData.totalCheckpoints / 5) * 100, 100) : 0;
+                        
+                        locationHTML = `
+                            <div class="location-tracker">
+                                <div class="tracker-header">
+                                    <span>📍 Real-Time Location Tracking</span>
+                                    <span class="status-badge">${loc.status}</span>
+                                </div>
+                                
+                                <div class="map-placeholder">
+                                    📍 Latitude: ${loc.latitude.toFixed(4)} | Longitude: ${loc.longitude.toFixed(4)}
+                                </div>
+
+                                <div class="tracker-info">
+                                    <p><strong>Current Location:</strong> <span>${loc.city}</span></p>
+                                    <p><strong>Address:</strong> <span>${loc.address}</span></p>
+                                    <p><strong>Distance Remaining:</strong> <span>${loc.distanceRemaining ? loc.distanceRemaining.toFixed(1) + ' km' : 'N/A'}</span></p>
+                                    <p><strong>Estimated Delivery:</strong> <span>${delivery.toLocaleDateString()} ${delivery.toLocaleTimeString()}</span></p>
+                                    <p><strong>Status Updates:</strong> <span>${locationData.totalCheckpoints} checkpoints</span></p>
+                                </div>
+
+                                <p style="color: white; font-size: 12px; margin-bottom: 10px;">📊 Delivery Progress</p>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${progress}%"></div>
+                                </div>
+
+                                ${locationData.totalCheckpoints > 0 ? `
+                                    <p style="color: white; font-size: 12px; margin-bottom: 5px;">📍 Recent Checkpoints</p>
+                                    <div class="checkpoint-list" id="checkpoints-${order.id}">
+                                    </div>
+                                ` : ''}
+
+                                <button class="track-button" onclick="simulateLocationUpdate(${order.id})">
+                                    🔄 Refresh Location
+                                </button>
+                            </div>
+                        `;
+                    }
+
+                    ordersHTML += `
+                        <div style="background: #f0f0f0; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <div>
+                                    <p><strong>Order #${order.id}</strong></p>
+                                    <p style="font-size: 12px; color: #666;">Placed: ${new Date(order.createdAt).toLocaleDateString()}</p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <p style="font-size: 18px; font-weight: bold; color: #667eea;">₹${order.totalAmount.toFixed(2)}</p>
+                                    <p style="font-size: 12px; color: #666;">${order.status}</p>
+                                </div>
+                            </div>
+                            ${locationHTML}
+                            ${order.aiSuggestions ? `<p style="color: #666; font-size: 12px; background: #fff; padding: 10px; border-radius: 3px; margin-top: 10px;">💡 ${order.aiSuggestions}</p>` : ''}
+                        </div>
+                    `;
+                }
+
+                container.innerHTML = ordersHTML;
+                
+                // Load checkpoints for each order
+                for (const order of orders) {
+                    loadOrderCheckpoints(order.id);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error loading orders', 'error');
+            }
+        }
+
+        // Get order location data
+        async function getOrderLocation(orderId) {
+            try {
+                const response = await fetch(`/api/locations/summary/${orderId}`);
+                if (response.ok) {
+                    return await response.json();
+                }
+                return null;
+            } catch (error) {
+                console.error('Error fetching location:', error);
+                return null;
+            }
+        }
+
+        // Load checkpoints for an order
+        async function loadOrderCheckpoints(orderId) {
+            try {
+                const response = await fetch(`/api/locations/history/${orderId}`);
+                if (!response.ok) return;
+                
+                const locations = await response.json();
+                const checkpointsContainer = document.getElementById(`checkpoints-${orderId}`);
+                
+                if (checkpointsContainer && locations.length > 0) {
+                    const checkpointsHTML = locations.slice(0, 3).map(loc => `
+                        <div class="checkpoint">
+                            <div class="checkpoint-time">${new Date(loc.updatedAt).toLocaleTimeString()}</div>
+                            <div class="checkpoint-desc">
+                                <strong>${loc.description || 'Location Update'}</strong><br>
+                                ${loc.city}
+                            </div>
+                        </div>
+                    `).join('');
+                    
+                    checkpointsContainer.innerHTML = checkpointsHTML || '<p style="color: #999; padding: 10px;">No checkpoints yet</p>';
+                }
+            } catch (error) {
+                console.error('Error loading checkpoints:', error);
+            }
+        }
+
+        // Simulate next location checkpoint (for demo)
+        async function simulateLocationUpdate(orderId) {
+            try {
+                const response = await fetch(`/api/locations/simulate/${orderId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ city: 'Delhi' })
+                });
+
+                if (response.ok) {
+                    showAlert('📍 Location updated! Next checkpoint generated.', 'success');
+                    await loadMyOrders();
+                } else {
+                    showAlert('Failed to update location', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error updating location', 'error');
+            }
+        }
+
+        // Switch tabs
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const container = document.getElementById('productsContainer');
+
+            if (tab === 'all') {
+                displayProducts(allProducts);
+            } else if (tab === 'ai-picks') {
+                const aiPicks = allProducts.filter(p => p.aiScore && p.aiScore > 50);
+                displayProducts(aiPicks);
+            } else if (tab === 'my-orders') {
+                if (!currentUserId) {
+                    showAlert('Please sign in to view your orders', 'info');
+                    toggleUserLogin();
+                    return;
+                }
+                container.innerHTML = '<div id="ordersContainer"></div>';
+                loadMyOrders();
+            }
+        }
+
+        // Show alert
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.innerHTML = `<div class="alert ${type}">${message}</div>`;
+            setTimeout(() => {
+                alertBox.innerHTML = '';
+            }, 5000);
+        }
+
+        // Show loading
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            if (show) {
+                loading.classList.add('active');
+            } else {
+                loading.classList.remove('active');
+            }
+        }
+
+        // ============ WISHLIST FUNCTIONS ============
+        async function toggleProductWishlist(productId, button) {
+            if (!currentUserId) {
+                showAlert('Please sign in first', 'info');
+                toggleUserLogin();
+                return;
+            }
+
+            const isInWishlist = button.classList.contains('active');
+            const endpoint = isInWishlist ? 'remove' : 'add';
+
+            try {
+                await fetch(`/api/wishlist/${currentUserId}/${endpoint}/${productId}`, {
+                    method: isInWishlist ? 'DELETE' : 'POST'
+                });
+
+                button.classList.toggle('active');
+                button.textContent = button.classList.contains('active') ? '❤️' : '🤍';
+                updateWishlistCount();
+                showAlert(isInWishlist ? 'Removed from wishlist' : 'Added to wishlist', 'success');
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error updating wishlist', 'error');
+            }
+        }
+
+        async function checkWishlistStatus(productId) {
+            if (!currentUserId) return;
+
+            try {
+                const response = await fetch(`/api/wishlist/${currentUserId}/check/${productId}`);
+                const isInWishlist = await response.json();
+                const button = document.getElementById(`wishlist-${productId}`);
+                if (button && isInWishlist) {
+                    button.classList.add('active');
+                    button.textContent = '❤️';
+                }
+            } catch (error) {
+                console.error('Error checking wishlist:', error);
+            }
+        }
+
+        async function updateWishlistCount() {
+            if (!currentUserId) return;
+
+            try {
+                const response = await fetch(`/api/wishlist/${currentUserId}`);
+                const wishlist = await response.json();
+                document.getElementById('wishlistCount').textContent = wishlist.length;
+            } catch (error) {
+                console.error('Error updating wishlist count:', error);
+            }
+        }
+
+        function toggleWishlist() {
+            showAlert('❤️ Your Wishlist:\n\nVisit the wishlist section to see saved items!', 'info');
+        }
+
+        // ============ PRODUCT VARIANTS FUNCTIONS ============
+        async function loadProductVariants(productId) {
+            try {
+                const response = await fetch(`/api/products/${productId}/variants`);
+                if (response.ok) {
+                    const variants = await response.json();
+                    const container = document.getElementById(`variants-${productId}`);
+                    
+                    if (variants && variants.length > 0) {
+                        container.innerHTML = variants.map(v => `
+                            <button class="variant-option" onclick="selectVariant(this, '${v.value}')">
+                                ${v.type}: ${v.value}
+                            </button>
+                        `).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading variants:', error);
+            }
+        }
+
+        function selectVariant(element, value) {
+            element.parentElement.querySelectorAll('.variant-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            element.classList.add('selected');
+        }
+
+        // ============ COUPON FUNCTIONS ============
+        async function applyCoupon(totalAmount) {
+            const couponCode = document.getElementById('couponCode').value;
+            if (!couponCode) {
+                showAlert('Please enter a coupon code', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/coupons/validate?code=${couponCode}&orderAmount=${totalAmount}`);
+                const result = await response.json();
+
+                const messageDiv = document.getElementById('couponMessage');
+                const discountDiv = document.getElementById('discountDisplay');
+
+                if (result.valid) {
+                    messageDiv.innerHTML = `<div style="color: green; padding: 10px; background: #d4edda; border-radius: 3px;">✓ Coupon applied! Save ₹${result.discount.toFixed(2)}</div>`;
+                    discountDiv.innerHTML = `<div class="total" style="color: #27ae60;">Discount: -₹${result.discount.toFixed(2)}</div>`;
+                    showAlert('Coupon applied successfully!', 'success');
+                } else {
+                    messageDiv.innerHTML = `<div style="color: red; padding: 10px; background: #f8d7da; border-radius: 3px;">✗ ${result.message}</div>`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error applying coupon', 'error');
+            }
+        }
+
+        // ============ NOTIFICATION FUNCTIONS ============
+        async function updateNotificationCount() {
+            if (!currentUserId) return;
+
+            try {
+                const response = await fetch(`/api/notifications/user/${currentUserId}/unread-count`);
+                const count = await response.json();
+                document.getElementById('notificationCount').textContent = count || 0;
+            } catch (error) {
+                console.error('Error updating notification count:', error);
+            }
+        }
+
+        function toggleNotifications() {
+            if (!currentUserId) {
+                showAlert('Please sign in to view notifications', 'info');
+                toggleUserLogin();
+                return;
+            }
+
+            showAlert('🔔 Notifications:\n\nYou have new order updates and deals!', 'info');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+    <!-- Professional Footer -->
+    <footer style="background: #1a1a1a; color: #fff; padding: 40px 20px; margin-top: 60px;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <!-- Footer Top Section -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 40px;">
+                
+                <!-- About Section -->
+                <div>
+                    <h3 style="font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #FF6B6B;">🛍️ AI MALL</h3>
+                    <p style="font-size: 13px; line-height: 1.6; color: #ccc; margin-bottom: 15px;">
+                        Your ultimate AI-powered shopping destination. We bring the future of e-commerce to you with intelligent product recommendations, real-time tracking, and exceptional customer service.
+                    </p>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 style="font-size: 15px; font-weight: bold; margin-bottom: 15px; color: #FF6B6B;">Quick Links</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 8px;"><a href="#" style="color: #ccc; text-decoration: none; font-size: 13px;">🏠 Home</a></li>
+                        <li style="margin-bottom: 8px;"><a href="#" style="color: #ccc; text-decoration: none; font-size: 13px;">📦 Products</a></li>
+                        <li style="margin-bottom: 8px;"><a href="#" style="color: #ccc; text-decoration: none; font-size: 13px;">🛒 My Orders</a></li>
+                        <li style="margin-bottom: 8px;"><a href="#" style="color: #ccc; text-decoration: none; font-size: 13px;">🤖 AI Assistant (VIYA)</a></li>
+                        <li style="margin-bottom: 8px;"><a href="#" style="color: #ccc; text-decoration: none; font-size: 13px;">📱 Mobile App</a></li>
+                    </ul>
+                </div>
+
+                <!-- Customer Service -->
+                <div>
+                    <h4 style="font-size: 15px; font-weight: bold; margin-bottom: 15px; color: #FF6B6B;">Customer Service</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 8px;"><a href="#" style="color: #ccc; text-decoration: none; font-size: 13px;">❓ FAQ</a></li>
+                        <li style="margin-bottom: 8px;"><a href="#" style="color: #ccc; text-decoration: none; font-size: 13px;">📞 Contact Us</a></li>
+                        <li style="margin-bottom: 8px;"><a href="#" style="color: #ccc; text-decoration: none; font-size: 13px;">🚚 Shipping Info</a></li>
+                        <li style="margin-bottom: 8px;"><a href="#" style="color: #ccc; text-decoration: none; font-size: 13px;">↩️ Returns & Exchange</a></li>
+                        <li style="margin-bottom: 8px;"><a href="#" style="color: #ccc; text-decoration: none; font-size: 13px;">💳 Payment Methods</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h4 style="font-size: 15px; font-weight: bold; margin-bottom: 15px; color: #FF6B6B;">Company</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 8px;"><a href="#" style="color: #ccc; text-decoration: none; font-size: 13px;">📋 About Us</a></li>
+                        <li style="margin-bottom: 8px;"><a href="#" style="color: #ccc; text-decoration: none; font-size: 13px;">🏢 Careers</a></li>
+                        <li style="margin-bottom: 8px;"><a href="#" style="color: #ccc; text-decoration: none; font-size: 13px;">📜 Terms & Conditions</a></li>
+                        <li style="margin-bottom: 8px;"><a href="#" style="color: #ccc; text-decoration: none; font-size: 13px;">🔒 Privacy Policy</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h4 style="font-size: 15px; font-weight: bold; margin-bottom: 15px; color: #FF6B6B;">Contact Us</h4>
+                    <p style="font-size: 13px; color: #ccc; margin-bottom: 10px;">
+                        <strong>📞 Phone:</strong><br>
+                        <a href="tel:+919304413933" style="color: #FF6B6B; text-decoration: none; font-weight: bold;">+91 93044-13933</a>
+                    </p>
+                    <p style="font-size: 13px; color: #ccc; margin-bottom: 10px;">
+                        <strong>📧 Email:</strong><br>
+                        <a href="shamsmallick88@gmail.com" style="color: #FF6B6B; text-decoration: none;">support@aimall.com</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Newsletter Section -->
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px; margin-bottom: 40px;">
+                <div style="display: grid; grid-template-columns: 1fr auto; gap: 15px; align-items: center;">
+                    <div>
+                        <h3 style="margin: 0 0 5px 0; font-size: 16px;">📬 Subscribe to Our Newsletter</h3>
+                        <p style="margin: 0; font-size: 13px; color: #ddd;">Get exclusive deals, product launches, and shopping tips delivered to your inbox!</p>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="email" placeholder="Enter your email" style="padding: 10px 15px; border: none; border-radius: 5px; font-size: 13px; width: 250px;">
+                        <button style="padding: 10px 20px; background: #FF6B6B; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 13px;">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Methods & Divider -->
+            <div style="border-top: 1px solid #333; padding-top: 30px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 30px;">
+                    <!-- Payment Methods -->
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                        <span style="font-size: 12px; color: #999; font-weight: bold;">ACCEPTED PAYMENT METHODS</span>
+                        <div style="display: flex; gap: 20px; align-items: center;">
+                            <div class="payment-method" onclick="selectPaymentMethod('upi')" style="text-align: center; cursor: pointer; padding: 10px; border-radius: 8px; transition: all 0.3s; border: 2px solid transparent;">
+                                <div style="font-size: 24px; margin-bottom: 5px;">📱</div>
+                                <span style="font-size: 12px; color: #ccc;">UPI</span>
+                            </div>
+                            <div class="payment-method" onclick="selectPaymentMethod('netbanking')" style="text-align: center; cursor: pointer; padding: 10px; border-radius: 8px; transition: all 0.3s; border: 2px solid transparent;">
+                                <div style="font-size: 24px; margin-bottom: 5px;">🏦</div>
+                                <span style="font-size: 12px; color: #ccc;">Net Banking</span>
+                            </div>
+                            <div class="payment-method" onclick="selectPaymentMethod('card')" style="text-align: center; cursor: pointer; padding: 10px; border-radius: 8px; transition: all 0.3s; border: 2px solid transparent;">
+                                <div style="font-size: 24px; margin-bottom: 5px;">💳</div>
+                                <span style="font-size: 12px; color: #ccc;">Credit/Debit</span>
+                            </div>
+                            <div class="payment-method" onclick="selectPaymentMethod('wallet')" style="text-align: center; cursor: pointer; padding: 10px; border-radius: 8px; transition: all 0.3s; border: 2px solid transparent;">
+                                <div style="font-size: 24px; margin-bottom: 5px;">💰</div>
+                                <span style="font-size: 12px; color: #ccc;">Wallets</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Footer -->
+            <div style="border-top: 1px solid #333; padding-top: 20px; text-align: center;">
+                <p style="font-size: 12px; color: #999; margin: 0 0 10px 0;">
+                    © 2026 AI MALL. All Rights Reserved. | Powered by Advanced AI Technology
+                </p>
+                <p style="font-size: 11px; color: #666; margin: 0;">
+                    <a href="#" style="color: #999; text-decoration: none; margin: 0 15px;">Privacy Policy</a> | 
+                    <a href="#" style="color: #999; text-decoration: none; margin: 0 15px;">Terms of Service</a> | 
+                    <a href="#" style="color: #999; text-decoration: none; margin: 0 15px;">Cookie Policy</a> | 
+                    <a href="#" style="color: #999; text-decoration: none; margin: 0 15px;">Accessibility</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
